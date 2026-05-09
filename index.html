@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#ffb7c5" />
+  <title>✦ 算数れんしゅう ✦</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=M+PLUS+Rounded+1c:wght@400;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- 言語切り替えボタン -->
+  <div class="lang-switch">
+    <button id="btn-ja" class="lang-btn active" onclick="setLang('ja')">🇯🇵 日本語</button>
+    <button id="btn-ko" class="lang-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
+  </div>
+
+  <!-- デコレーション -->
+  <div class="deco deco-1">🌸</div>
+  <div class="deco deco-2">⭐</div>
+  <div class="deco deco-3">💕</div>
+  <div class="deco deco-4">🌷</div>
+
+  <!-- トップ画面 -->
+  <div id="screen-top" class="screen active">
+    <div class="card top-card">
+      <div class="title-emoji">🎀</div>
+      <h1 class="app-title" data-i18n="appTitle">算数れんしゅう</h1>
+      <p class="app-subtitle" data-i18n="appSubtitle">たし算・ひき算にチャレンジ！</p>
+
+      <div class="section-label" data-i18n="selectLevel">レベルをえらんでね</div>
+      <div class="difficulty-btns">
+        <button class="diff-btn diff-easy selected" onclick="selectDifficulty('easy')" data-diff="easy">
+          <span class="diff-emoji">🌸</span>
+          <span data-i18n="easy">かんたん</span>
+        </button>
+        <button class="diff-btn diff-normal" onclick="selectDifficulty('normal')" data-diff="normal">
+          <span class="diff-emoji">⭐</span>
+          <span data-i18n="normal">ふつう</span>
+        </button>
+        <button class="diff-btn diff-hard" onclick="selectDifficulty('hard')" data-diff="hard">
+          <span class="diff-emoji">💎</span>
+          <span data-i18n="hard">むずかしい</span>
+        </button>
+      </div>
+
+      <div class="diff-desc" id="diff-desc"></div>
+
+      <button class="start-btn" onclick="startGame()">
+        <span data-i18n="start">スタート！</span> 💖
+      </button>
+    </div>
+  </div>
+
+  <!-- 問題画面 -->
+  <div id="screen-game" class="screen">
+    <div class="card game-card">
+      <div class="progress-wrap">
+        <div class="progress-text">
+          <span data-i18n="question">もんだい</span>
+          <span id="current-q">1</span> / <span id="total-q">20</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar"></div>
+        </div>
+        <div class="score-chip">
+          <span>✦</span>
+          <span id="score-display">0</span>
+          <span data-i18n="correct">せいかい</span>
+        </div>
+      </div>
+
+      <div class="question-box" id="question-box">
+        <span id="num1">12</span>
+        <span id="operator">＋</span>
+        <span id="num2">5</span>
+        <span class="eq">＝</span>
+        <span class="question-mark">?</span>
+      </div>
+
+      <div class="answer-section">
+        <input
+          type="number"
+          id="answer-input"
+          class="answer-input"
+          placeholder="?"
+          inputmode="numeric"
+          onkeydown="handleKey(event)"
+        />
+        <button class="submit-btn" onclick="submitAnswer()" data-i18n="answer">こたえる</button>
+      </div>
+
+      <div class="feedback" id="feedback"></div>
+
+      <div class="numpad">
+        <button class="num-key" onclick="appendNum('7')">7</button>
+        <button class="num-key" onclick="appendNum('8')">8</button>
+        <button class="num-key" onclick="appendNum('9')">9</button>
+        <button class="num-key" onclick="appendNum('4')">4</button>
+        <button class="num-key" onclick="appendNum('5')">5</button>
+        <button class="num-key" onclick="appendNum('6')">6</button>
+        <button class="num-key" onclick="appendNum('1')">1</button>
+        <button class="num-key" onclick="appendNum('2')">2</button>
+        <button class="num-key" onclick="appendNum('3')">3</button>
+        <button class="num-key num-zero" onclick="appendNum('0')">0</button>
+        <button class="num-key num-del" onclick="deleteNum()">⌫</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 結果画面 -->
+  <div id="screen-result" class="screen">
+    <div class="card result-card">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <h2 class="result-title" data-i18n="result">けっか</h2>
+      <div class="result-score">
+        <span id="result-correct">0</span>
+        <span class="result-slash"> / </span>
+        <span id="result-total">20</span>
+      </div>
+      <p class="result-message" id="result-message"></p>
+      <div class="result-stars" id="result-stars"></div>
+      <button class="start-btn" onclick="backToTop()" data-i18n="retry">もう一度！</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
