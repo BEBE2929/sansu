@@ -1,4 +1,4 @@
-const CACHE = 'sansu-v1';
+const CACHE = 'sansu-v2';
 const ASSETS = [
   '/',
   '/index.html',

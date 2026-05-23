@@ -1,2 +1,2 @@
-# MyTask
-ToDo List
+# sansu
+足し算・引き算 算数れんしゅうアプリ
