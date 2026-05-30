@@ -12,6 +12,10 @@ const i18n = {
     easyDesc:    '1けたのたし算・ひき算',
     normalDesc:  '2けた ＋ 1けた',
     hardDesc:    '2けた ＋ 2けた（くり上がりあり）',
+    selectOp:    'けいさんのしゅるい 🌸',
+    opBoth:      'まじり',
+    opAdd:       'たし算だけ',
+    opSub:       'ひき算だけ',
     start:       'スタート！',
     question:    'もんだい',
     correct:     'せいかい',
@@ -36,6 +40,10 @@ const i18n = {
     easyDesc:    '한 자리 덧셈·뺄셈',
     normalDesc:  '두 자리 ＋ 한 자리',
     hardDesc:    '두 자리 ＋ 두 자리 (올림 있음)',
+    selectOp:    '계산 종류 🌸',
+    opBoth:      '섞기',
+    opAdd:       '덧셈만',
+    opSub:       '뺄셈만',
     start:       '시작！',
     question:    '문제',
     correct:     '정답',
@@ -55,6 +63,7 @@ const i18n = {
 // ===== 状態 =====
 let lang = 'ja';
 let difficulty = 'easy';
+let opType = 'both';
 let questions = [];
 let currentIndex = 0;
 let score = 0;
@@ -90,6 +99,13 @@ function selectDifficulty(diff) {
   updateDiffDesc();
 }
 
+// ===== 計算種類 =====
+function selectOp(op) {
+  opType = op;
+  document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelector(`.op-btn[data-op="${op}"]`).classList.add('selected');
+}
+
 function updateDiffDesc() {
   const desc = { easy: t('easyDesc'), normal: t('normalDesc'), hard: t('hardDesc') };
   document.getElementById('diff-desc').textContent = desc[difficulty] || '';
@@ -112,7 +128,9 @@ function generateQuestion() {
     a = rand(10, 99);
     b = rand(10, 99);
   }
-  op = Math.random() < 0.5 ? '+' : '-';
+  if (opType === 'add') op = '+';
+  else if (opType === 'sub') op = '-';
+  else op = Math.random() < 0.5 ? '+' : '-';
   if (op === '-' && a < b) [a, b] = [b, a];
   const answer = op === '+' ? a + b : a - b;
   return { a, b, op, answer };
@@ -245,6 +263,7 @@ function backToTop() {
 document.addEventListener('DOMContentLoaded', () => {
   applyI18n();
   selectDifficulty('easy');
+  selectOp('both');
 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').catch(() => {});
