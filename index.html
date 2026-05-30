@@ -49,6 +49,22 @@
 
       <div class="diff-desc" id="diff-desc"></div>
 
+      <div class="section-label" data-i18n="selectOp">けいさんのしゅるい 🌸</div>
+      <div class="op-btns">
+        <button class="op-btn selected" onclick="selectOp('both')" data-op="both">
+          <span class="op-emoji">🔀</span>
+          <span data-i18n="opBoth">まじり</span>
+        </button>
+        <button class="op-btn" onclick="selectOp('add')" data-op="add">
+          <span class="op-emoji">➕</span>
+          <span data-i18n="opAdd">たし算だけ</span>
+        </button>
+        <button class="op-btn" onclick="selectOp('sub')" data-op="sub">
+          <span class="op-emoji">➖</span>
+          <span data-i18n="opSub">ひき算だけ</span>
+        </button>
+      </div>
+
       <button class="start-btn" onclick="startGame()">
         <span data-i18n="start">スタート！</span> 💖
       </button>
@@ -90,7 +106,6 @@
           inputmode="numeric"
           onkeydown="handleKey(event)"
         />
-        <button class="submit-btn" onclick="submitAnswer()" data-i18n="answer">こたえる</button>
       </div>
 
       <div class="feedback" id="feedback"></div>
@@ -108,6 +123,8 @@
         <button class="num-key num-zero" onclick="appendNum('0')">0</button>
         <button class="num-key num-del" onclick="deleteNum()">⌫</button>
       </div>
+
+      <button class="submit-btn" onclick="submitAnswer()" data-i18n="answer">こたえる</button>
     </div>
   </div>
 
