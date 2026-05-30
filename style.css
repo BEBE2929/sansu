@@ -318,11 +318,8 @@ body {
   text-align: center;
   outline: none;
   transition: border-color 0.2s;
-  -moz-appearance: textfield;
+  cursor: default;
 }
-
-.answer-input::-webkit-outer-spin-button,
-.answer-input::-webkit-inner-spin-button { -webkit-appearance: none; }
 
 .answer-input:focus { border-color: var(--pink); }
 
