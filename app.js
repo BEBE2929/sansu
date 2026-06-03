@@ -68,6 +68,7 @@ let questions = [];
 let currentIndex = 0;
 let score = 0;
 let answered = false;
+let currentAnswer = '';
 
 const TOTAL = 20;
 
@@ -155,8 +156,13 @@ function startGame() {
   showQuestion();
 }
 
+function updateAnswerDisplay() {
+  document.getElementById('answer-input').textContent = currentAnswer === '' ? '?' : currentAnswer;
+}
+
 function showQuestion() {
   answered = false;
+  currentAnswer = '';
   const q = questions[currentIndex];
   document.getElementById('num1').textContent = q.a;
   document.getElementById('operator').textContent = q.op === '+' ? '＋' : '－';
@@ -164,21 +170,18 @@ function showQuestion() {
   document.getElementById('current-q').textContent = currentIndex + 1;
   document.getElementById('total-q').textContent = TOTAL;
   document.getElementById('score-display').textContent = score;
-  document.getElementById('answer-input').value = '';
   document.getElementById('feedback').textContent = '';
   document.getElementById('feedback').className = 'feedback';
+  updateAnswerDisplay();
 
   const pct = (currentIndex / TOTAL) * 100;
   document.getElementById('progress-bar').style.width = pct + '%';
-
-  document.getElementById('answer-input').focus();
 }
 
 // ===== 回答 =====
 function submitAnswer() {
   if (answered) return;
-  const input = document.getElementById('answer-input');
-  const val = input.value.trim();
+  const val = currentAnswer.trim();
   if (val === '') return;
 
   answered = true;
@@ -207,21 +210,17 @@ function submitAnswer() {
   }, 900);
 }
 
-function handleKey(e) {
-  if (e.key === 'Enter') submitAnswer();
-}
-
 // ===== 数字パッド =====
 function appendNum(n) {
-  const input = document.getElementById('answer-input');
-  if (input.value.length < 4) input.value += n;
-  input.focus();
+  if (currentAnswer.length < 4) {
+    currentAnswer += n;
+    updateAnswerDisplay();
+  }
 }
 
 function deleteNum() {
-  const input = document.getElementById('answer-input');
-  input.value = input.value.slice(0, -1);
-  input.focus();
+  currentAnswer = currentAnswer.slice(0, -1);
+  updateAnswerDisplay();
 }
 
 // ===== 結果 =====

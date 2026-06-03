@@ -316,12 +316,10 @@ body {
   color: var(--text);
   background: var(--cream);
   text-align: center;
-  outline: none;
-  transition: border-color 0.2s;
-  cursor: default;
+  line-height: 1.4;
+  user-select: none;
+  -webkit-user-select: none;
 }
-
-.answer-input:focus { border-color: var(--pink); }
 
 .submit-btn {
   background: linear-gradient(135deg, var(--pink-deep), var(--lavender));
