@@ -29,6 +29,10 @@ const i18n = {
     msg15:       '⭐ よくできました！',
     msg10:       '💪 もう少し！がんばろう！',
     msgLow:      '🌷 れんしゅうしよう！',
+    wrongTitle:  '💦 まちがえた もんだい',
+    noWrong:     '🎉 まちがいなし！ かんぺき！',
+    yourAns:     'あなた',
+    correctAns:  'こたえ',
   },
   ko: {
     appTitle:    '산수 연습',
@@ -57,6 +61,10 @@ const i18n = {
     msg15:       '⭐ 잘했어요！',
     msg10:       '💪 조금만 더！힘내요！',
     msgLow:      '🌷 연습해봐요！',
+    wrongTitle:  '💦 틀린 문제',
+    noWrong:     '🎉 틀린 문제 없어요！ 완벽！',
+    yourAns:     '내 답',
+    correctAns:  '정답',
   },
 };
 
@@ -69,6 +77,7 @@ let currentIndex = 0;
 let score = 0;
 let answered = false;
 let currentAnswer = '';
+let wrongAnswers = [];
 
 const TOTAL = 20;
 
@@ -152,6 +161,7 @@ function startGame() {
   generateAllQuestions();
   currentIndex = 0;
   score = 0;
+  wrongAnswers = [];
   showScreen('screen-game');
   showQuestion();
 }
@@ -196,6 +206,7 @@ function submitAnswer() {
   } else {
     fb.textContent = `${t('feedbackWrong')}  (${q.answer})`;
     fb.className = 'feedback wrong pop';
+    wrongAnswers.push({ a: q.a, b: q.b, op: q.op, correct: q.answer, yours: userAnswer });
   }
 
   document.getElementById('score-display').textContent = score;
@@ -250,9 +261,31 @@ function showResult() {
   const starFull  = Math.round((score / TOTAL) * 5);
   const stars = '★'.repeat(starFull) + '☆'.repeat(5 - starFull);
   document.getElementById('result-stars').textContent = stars;
+
+  const wrongSection = document.getElementById('wrong-section');
+  const wrongList = document.getElementById('wrong-list');
+  wrongList.innerHTML = '';
+
+  if (wrongAnswers.length === 0) {
+    wrongList.innerHTML = `<div class="no-wrong">${t('noWrong')}</div>`;
+  } else {
+    wrongAnswers.forEach(w => {
+      const opSymbol = w.op === '+' ? '＋' : '－';
+      const item = document.createElement('div');
+      item.className = 'wrong-item';
+      item.innerHTML =
+        `<span class="wrong-expr">${w.a} ${opSymbol} ${w.b} ＝</span>` +
+        `<span class="wrong-yours">${w.yours}</span>` +
+        `<span class="wrong-arrow">→</span>` +
+        `<span class="wrong-correct">✓ ${w.correct}</span>`;
+      wrongList.appendChild(item);
+    });
+  }
+  wrongSection.style.display = 'flex';
 }
 
 function backToTop() {
+  document.getElementById('wrong-section').style.display = 'none';
   showScreen('screen-top');
   applyI18n();
   updateDiffDesc();
