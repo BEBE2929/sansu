@@ -33,6 +33,14 @@ const i18n = {
     noWrong:     '🎉 まちがいなし！ かんぺき！',
     yourAns:     'あなた',
     correctAns:  'こたえ',
+    trendTitle:  '📊 まちがいの けいこう',
+    trendAdd:    '➕ たし算で まちがいが おおかった',
+    trendSub:    '➖ ひき算で まちがいが おおかった',
+    trendCarry:  '🔢 くり上がり・くり下がりが にがて',
+    trendHigh:   '📈 答えを 大きく かきすぎる ことが おおい',
+    trendLow:    '📉 答えを 小さく かきすぎる ことが おおい',
+    trendClose:  '🎯 あと 1〜2 で せいかいだった ことが おおい',
+    trendNone:   '✨ とくべつな くせは なし！',
   },
   ko: {
     appTitle:    '산수 연습',
@@ -65,6 +73,14 @@ const i18n = {
     noWrong:     '🎉 틀린 문제 없어요！ 완벽！',
     yourAns:     '내 답',
     correctAns:  '정답',
+    trendTitle:  '📊 실수 경향 분석',
+    trendAdd:    '➕ 덧셈 실수가 많았어요',
+    trendSub:    '➖ 뺄셈 실수가 많았어요',
+    trendCarry:  '🔢 받아올림·내림이 어려워요',
+    trendHigh:   '📈 답을 크게 쓰는 경우가 많아요',
+    trendLow:    '📉 답을 작게 쓰는 경우가 많아요',
+    trendClose:  '🎯 1〜2 차이로 틀린 경우가 많아요',
+    trendNone:   '✨ 뚜렷한 경향 없어요！',
   },
 };
 
@@ -234,6 +250,41 @@ function deleteNum() {
   updateAnswerDisplay();
 }
 
+// ===== 傾向分析 =====
+function analyzeWrongAnswers(wrongs) {
+  if (wrongs.length < 2) return [];
+
+  const total = wrongs.length;
+  const THRESHOLD = 0.6;
+  const insights = [];
+
+  // たし算 vs ひき算
+  const addWrong = wrongs.filter(w => w.op === '+').length;
+  const subWrong = wrongs.filter(w => w.op === '-').length;
+  if (opType === 'both') {
+    if (addWrong >= total * THRESHOLD) insights.push('trendAdd');
+    else if (subWrong >= total * THRESHOLD) insights.push('trendSub');
+  }
+
+  // くり上がり・くり下がり
+  const carryCount = wrongs.filter(w =>
+    w.op === '+' ? (w.a % 10 + w.b % 10) >= 10 : (w.a % 10) < (w.b % 10)
+  ).length;
+  if (carryCount >= total * THRESHOLD) insights.push('trendCarry');
+
+  // 答えの方向 (大きすぎ / 小さすぎ)
+  const tooHigh = wrongs.filter(w => w.yours > w.correct).length;
+  const tooLow  = wrongs.filter(w => w.yours < w.correct).length;
+  if (tooHigh >= total * THRESHOLD) insights.push('trendHigh');
+  else if (tooLow >= total * THRESHOLD) insights.push('trendLow');
+
+  // あと少し (差が1〜2)
+  const nearMiss = wrongs.filter(w => Math.abs(w.yours - w.correct) <= 2).length;
+  if (nearMiss >= total * THRESHOLD) insights.push('trendClose');
+
+  return insights.slice(0, 3);
+}
+
 // ===== 結果 =====
 function showResult() {
   document.getElementById('progress-bar').style.width = '100%';
@@ -282,10 +333,30 @@ function showResult() {
     });
   }
   wrongSection.style.display = 'flex';
+
+  // 傾向分析
+  const trendSection = document.getElementById('trend-section');
+  const trendList = document.getElementById('trend-list');
+  trendList.innerHTML = '';
+
+  if (wrongAnswers.length >= 2) {
+    const insights = analyzeWrongAnswers(wrongAnswers);
+    const keys = insights.length > 0 ? insights : ['trendNone'];
+    keys.forEach(key => {
+      const chip = document.createElement('div');
+      chip.className = 'trend-chip';
+      chip.textContent = t(key);
+      trendList.appendChild(chip);
+    });
+    trendSection.style.display = 'flex';
+  } else {
+    trendSection.style.display = 'none';
+  }
 }
 
 function backToTop() {
   document.getElementById('wrong-section').style.display = 'none';
+  document.getElementById('trend-section').style.display = 'none';
   showScreen('screen-top');
   applyI18n();
   updateDiffDesc();

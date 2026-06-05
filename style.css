@@ -416,6 +416,40 @@ body {
   min-height: 32px;
 }
 
+/* ===== 傾向分析 ===== */
+.trend-section {
+  width: 100%;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.trend-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-light);
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.trend-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.trend-chip {
+  background: linear-gradient(135deg, #fff5fb, #f0eeff);
+  border: 1.5px solid rgba(212, 184, 224, 0.6);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  line-height: 1.4;
+}
+
 /* ===== 間違いリスト ===== */
 .wrong-section {
   width: 100%;
