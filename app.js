@@ -25,6 +25,17 @@ const i18n = {
     msg15:       '⭐ よくできました！',
     msg10:       '💪 もう少し！がんばろう！',
     msgLow:      '🌷 れんしゅうしよう！',
+    wrongTitle:  '💦 まちがえたもんだい',
+    yourAnswer:  'あなたのこたえ',
+    rightAnswer: 'せいかい',
+    errOpposite: 'たし算とひき算をまちがえた',
+    errFlipped:  'ひっくり返してひき算した',
+    errCarry:    'くり上がり・くり下がりのミス',
+    errTens:     '10のくらいのミス',
+    errClose1:   'あと1つで正解！',
+    errClose2:   'あと2つで正解！',
+    errBig:      'もう一度ゆっくりかんがえてみよう',
+    errGeneral:  'もう少しれんしゅうしよう',
   },
   ko: {
     appTitle:    '산수 연습',
@@ -49,6 +60,17 @@ const i18n = {
     msg15:       '⭐ 잘했어요！',
     msg10:       '💪 조금만 더！힘내요！',
     msgLow:      '🌷 연습해봐요！',
+    wrongTitle:  '💦 틀린 문제',
+    yourAnswer:  '내 답',
+    rightAnswer: '정답',
+    errOpposite: '덧셈과 뺄셈을 혼동했어요',
+    errFlipped:  '큰 수와 작은 수를 바꿔서 뺐어요',
+    errCarry:    '올림·내림 실수예요',
+    errTens:     '10의 자리 실수예요',
+    errClose1:   '하나 차이예요！',
+    errClose2:   '둘 차이예요！',
+    errBig:      '천천히 다시 생각해봐요',
+    errGeneral:  '조금 더 연습해봐요',
   },
 };
 
@@ -59,6 +81,7 @@ let questions = [];
 let currentIndex = 0;
 let score = 0;
 let answered = false;
+let wrongQuestions = [];
 
 const TOTAL = 20;
 
@@ -133,6 +156,7 @@ function startGame() {
   generateAllQuestions();
   currentIndex = 0;
   score = 0;
+  wrongQuestions = [];
   showScreen('screen-game');
   showQuestion();
 }
@@ -173,6 +197,7 @@ function submitAnswer() {
     fb.textContent = t('feedbackCorrect');
     fb.className = 'feedback correct pop';
   } else {
+    wrongQuestions.push({ ...q, userAnswer });
     fb.textContent = `${t('feedbackWrong')}  (${q.answer})`;
     fb.className = 'feedback wrong pop';
   }
@@ -206,6 +231,22 @@ function deleteNum() {
   input.focus();
 }
 
+// ===== エラー分析 =====
+function analyzeError(q, userAnswer) {
+  const { a, b, op, answer } = q;
+  const diff = Math.abs(userAnswer - answer);
+
+  if (op === '+' && userAnswer === a - b) return t('errOpposite');
+  if (op === '-' && userAnswer === a + b) return t('errOpposite');
+  if (op === '-' && userAnswer === b - a) return t('errFlipped');
+  if (diff === 10 || (diff % 10 === 0 && diff <= 20)) return t('errCarry');
+  if (diff % 10 === 0) return t('errTens');
+  if (diff === 1) return t('errClose1');
+  if (diff === 2) return t('errClose2');
+  if (diff > 20) return t('errBig');
+  return t('errGeneral');
+}
+
 // ===== 結果 =====
 function showResult() {
   document.getElementById('progress-bar').style.width = '100%';
@@ -233,6 +274,37 @@ function showResult() {
   const starFull  = Math.round((score / TOTAL) * 5);
   const stars = '★'.repeat(starFull) + '☆'.repeat(5 - starFull);
   document.getElementById('result-stars').textContent = stars;
+
+  renderWrongList();
+}
+
+function renderWrongList() {
+  const container = document.getElementById('wrong-list');
+  if (wrongQuestions.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const opChar = op => op === '+' ? '＋' : '－';
+
+  let html = `<div class="wrong-title">${t('wrongTitle')}</div>`;
+  wrongQuestions.forEach((q, i) => {
+    const analysis = analyzeError(q, q.userAnswer);
+    html += `
+      <div class="wrong-item">
+        <div class="wrong-num">${i + 1}</div>
+        <div class="wrong-body">
+          <div class="wrong-expr">${q.a} ${opChar(q.op)} ${q.b} ＝ ?</div>
+          <div class="wrong-answers">
+            <span class="wrong-user">${t('yourAnswer')}: <b>${q.userAnswer}</b></span>
+            <span class="wrong-correct">${t('rightAnswer')}: <b>${q.answer}</b></span>
+          </div>
+          <div class="wrong-analysis">→ ${analysis}</div>
+        </div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
 }
 
 function backToTop() {

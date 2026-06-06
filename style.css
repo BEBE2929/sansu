@@ -394,6 +394,81 @@ body {
 
 .pop { animation: pop 0.3s ease; }
 
+/* ===== 間違い一覧 ===== */
+.wrong-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wrong-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--pink-deep);
+  text-align: center;
+  padding: 6px 0 2px;
+}
+
+.wrong-item {
+  background: linear-gradient(135deg, #fff5f7, #f9f0ff);
+  border: 2px solid rgba(255,183,197,0.5);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.wrong-num {
+  background: var(--pink);
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.wrong-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wrong-expr {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.wrong-answers {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.wrong-user {
+  color: #e57373;
+}
+
+.wrong-correct {
+  color: #4caf50;
+}
+
+.wrong-analysis {
+  font-size: 12px;
+  color: var(--lavender);
+  font-weight: 700;
+}
+
 /* ===== レスポンシブ ===== */
 @media (max-width: 380px) {
   .question-box { font-size: 34px; padding: 20px 12px; }
